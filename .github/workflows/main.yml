@@ -1,4 +1,4 @@
-name: Scheduled Script Execution
+name: Zeroscam Blacklist Script
 
 on:
   workflow_dispatch:
@@ -50,7 +50,7 @@ jobs:
           blacklist_urls = config_data.get('blacklist', [])
           
           # Write output to a text file
-          os.makedirs('lists', exist_ok=True)
+          os.makedirs('blacklists', exist_ok=True)
           os.makedirs('dist', exist_ok=True)
           with open('dist/config.txt', 'w') as txt_file:
                 for url in blacklist_urls:
@@ -72,7 +72,7 @@ jobs:
           python process_domains.py
       - name: Move output files
         run: |
-          mv dist/blacklist.txt lists/daily
+          mv dist/blacklist.txt blacklists/Latest_Blacklists
       - name: Clean up untracked files
         run: |
           rm -f domains.json process_domains.py config.json
@@ -80,9 +80,9 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add lists
+          git add blacklists
           if ! git diff --cached --quiet; then
-             git commit -m "Update Blocklist Phising Site Lists ($(date +'%Y-%m-%d'))"
+             git commit -m "Update Phising Site blacklists ($(date +'%Y-%m-%d'))"
              git push
           else
             echo "No changes to commit."
